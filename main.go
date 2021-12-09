@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/xuri/excelize/v2"
 	"log"
+
+	"github.com/xuri/excelize/v2"
 )
 
 func main() {
@@ -15,7 +16,24 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	fmt.Println("Nome do arquivo:",arquivo)
+	fmt.Println("Nome do arquivo:", arquivo)
+
+	// Get all the rows in the Sheet1.
+	fmt.Println("***************** rows *****************")
+	rows, err := f.GetRows("IS_monthly Plan_GL")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, row := range rows {
+		if row != nil {
+			for _, colCell := range row {
+				fmt.Print(colCell, "\t")
+			}
+			fmt.Println()
+		}
+	}
+	fmt.Println("***************** rows *****************")
 
 	// Realiza validação da planilha e havendo erro, devolve para o usuário corrigir...
 	validacao(f)
@@ -25,17 +43,18 @@ func main() {
 
 }
 
+// Validacao
 func validacao(f *excelize.File) {
 
 	// Abre a primeira pasta (Sheet)
 	sheet := f.WorkBook.Sheets.Sheet[0].Name
 
 	// Se a aba estiver com nome errado, já gera um erro
-	if sheet != "IS_monthly Plan_GL"  {
+	if sheet != "IS_monthly Plan_GL" {
 		log.Fatalln("ERRO -> Aba IS_monthly Plan_GL não encontrada!")
 	}
 
-	cell, err := f.GetCellValue(sheet, "A8")
+	cell, err := f.GetCellValue(sheet, "A4")
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -48,37 +67,37 @@ func validacao(f *excelize.File) {
 
 	// fmt.Println("Valor da célula A8: ",cell)
 
-	cell, err = f.GetCellValue(sheet, "B8")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	// cell, err = f.GetCellValue(sheet, "B8")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
 
-	// Recupera uma fórmula para validação tb
-	//formula, err := f.GetCellFormula(sheet,"B8")
-	//fmt.Println("Fórmula da célula B8: ", formula)
+	// // Recupera uma fórmula para validação tb
+	// formula, err := f.GetCellFormula(sheet, "B8")
+	// fmt.Println("Fórmula da célula B8: ", formula)
 
 	// Verifica se a coluna de mês está na posição correta e se o nome também está correto...
-	jan21, err := f.GetCellValue(sheet, "B6")
+	jan21, err := f.GetCellValue(sheet, "B2")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-//	fmt.Println("Valor da célula B6: ", jan21)
+	//	fmt.Println("Valor da célula B6: ", jan21)
 
 	if jan21 != "Jan/21" {
 		log.Fatalln("ERRO -> A célula B6 deveria ter o título 'Jan/21'")
 	}
 
 	// Verifica se o título da planilha está correto
-	titulo, err := f.GetCellValue(sheet, "B5")
+	titulo, err := f.GetCellValue(sheet, "B1")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-//	fmt.Println("Valor da célula B5: ", titulo)
+	//	fmt.Println("Valor da célula B5: ", titulo)
 
 	if titulo != "Plan 2021 - STA" {
 		log.Fatalln("ERRO -> O título na célula B6 deve ser 'Plan 2021 - STA'")
@@ -221,38 +240,38 @@ func report(f *excelize.File) {
 	fmt.Println("=================================================================================================")
 
 	fmt.Printf("%-20s", a8)
-	fmt.Printf("%-20s","")
-	fmt.Printf("%-10s",b8)
-	fmt.Printf("%-10s",c8)
-	fmt.Printf("%-10s",d8)
+	fmt.Printf("%-20s", "")
+	fmt.Printf("%-10s", b8)
+	fmt.Printf("%-10s", c8)
+	fmt.Printf("%-10s", d8)
 	fmt.Println()
 
 	fmt.Printf("%-20s", "Premium")
-	fmt.Printf("%-20s",a9)
-	fmt.Printf("%-10s",b9)
-	fmt.Printf("%-10s",c9)
-	fmt.Printf("%-10s",d9)
+	fmt.Printf("%-20s", a9)
+	fmt.Printf("%-10s", b9)
+	fmt.Printf("%-10s", c9)
+	fmt.Printf("%-10s", d9)
 	fmt.Println()
 
 	fmt.Printf("%-20s", "Premium")
 	fmt.Printf("%-20s", a10)
-	fmt.Printf("%-10s",b10)
-	fmt.Printf("%-10s",c10)
-	fmt.Printf("%-10s",d10)
+	fmt.Printf("%-10s", b10)
+	fmt.Printf("%-10s", c10)
+	fmt.Printf("%-10s", d10)
 	fmt.Println()
 
 	fmt.Printf("%-20s", a14)
-	fmt.Printf("%-20s","")
-	fmt.Printf("%-10s",b14)
-	fmt.Printf("%-10s",c14)
-	fmt.Printf("%-10s",d14)
+	fmt.Printf("%-20s", "")
+	fmt.Printf("%-10s", b14)
+	fmt.Printf("%-10s", c14)
+	fmt.Printf("%-10s", d14)
 	fmt.Println()
 
 	fmt.Printf("%-20s", a16)
-	fmt.Printf("%-20s","")
-	fmt.Printf("%-10s",b16)
-	fmt.Printf("%-10s",c16)
-	fmt.Printf("%-10s",d16)
+	fmt.Printf("%-20s", "")
+	fmt.Printf("%-10s", b16)
+	fmt.Printf("%-10s", c16)
+	fmt.Printf("%-10s", d16)
 	fmt.Println()
 
 	fmt.Println("=================================================================================================")
@@ -267,12 +286,7 @@ func formatacao(valor string) string {
 	}
 }
 
-
-
-
-
 /*  Importações
 go get github.com/xuri/excelize/v2
 
- */
-
+*/
